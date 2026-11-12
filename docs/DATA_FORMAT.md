@@ -1,6 +1,6 @@
 # Data format
 
-All data lives in `data/` (or `$TWEETMGR_DATA`). Files are pretty-printed JSON and safe to edit by hand, by scripts, or by AI agents. Write a whole file at once; the app re-reads it when its tab regains focus.
+All data lives in `data/` (or `$TWEETMGR_DATA`). Files are pretty-printed JSON and safe to edit by hand, by scripts, or by AI agents. For most edits the CLI is easier; see [AGENT_GUIDE.md](AGENT_GUIDE.md). Write a whole file at once; the app re-reads it when its tab regains focus.
 
 ## Thread: `data/threads/<id>.json`
 

@@ -4,10 +4,14 @@
   "description": "Locally run composer for drafting Twitter/X threads.",
   "private": true,
   "type": "module",
+  "bin": {
+    "tweetmgr": "bin/tweetmgr.js"
+  },
   "scripts": {
     "start": "node server.js",
     "test": "node --test test/*.test.js",
-    "screenshots": "node scripts/screenshots.mjs"
+    "screenshots": "node scripts/screenshots.mjs",
+    "cli": "node bin/tweetmgr.js"
   },
   "engines": {
     "node": ">=18"
