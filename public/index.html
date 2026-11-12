@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>tweetMgr</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2333ccff'/%3E%3Ctext x='16' y='23' font-family='Arial' font-weight='bold' font-size='20' fill='white' text-anchor='middle'%3Et%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="wordmark" href="/">tweet<span>Mgr</span></a>
+      <span class="topbar-note" id="storage-note"></span>
+      <span class="topbar-status" id="save-status"></span>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="content" aria-label="Thread composer">
+      <div class="content-header">
+        <input id="thread-title" class="thread-title" type="text" aria-label="Thread title" placeholder="Untitled thread">
+        <span class="thread-meta" id="thread-meta"></span>
+      </div>
+      <ol id="tweets" class="tweets"></ol>
+      <div class="content-footer">
+        <button type="button" class="btn" id="add-tweet">+ Add tweet</button>
+      </div>
+    </section>
+
+    <aside class="dashboard" aria-label="Sidebar">
+      <div class="dash-box" id="profile-box">
+        <h3>Account</h3>
+        <label>Name <input id="profile-name" type="text"></label>
+        <label>Handle <span class="at-input">@<input id="profile-handle" type="text"></span></label>
+        <label>Account type
+          <select id="profile-type"></select>
+        </label>
+        <label id="custom-limit-row" hidden>Character limit <input id="profile-limit" type="number" min="1" step="1"></label>
+        <p class="dash-hint" id="limit-hint"></p>
+      </div>
+
+      <div class="dash-box" id="threads-box">
+        <h3>Your threads <button type="button" class="btn btn-small" id="new-thread">New</button></h3>
+        <ul id="thread-list" class="thread-list"></ul>
+      </div>
+
+      <div class="dash-box" id="export-box">
+        <h3>Post it</h3>
+        <button type="button" class="btn btn-block" id="copy-typer" title="Copies the thread as JSON for the typing macro">Copy for typer</button>
+        <p class="dash-hint">Paste into the typing macro so each tweet is typed out instead of pasted.</p>
+      </div>
+    </aside>
+  </main>
+
+  <template id="tweet-template">
+    <li class="tweet">
+      <div class="avatar" aria-hidden="true"></div>
+      <div class="tweet-body">
+        <div class="tweet-head">
+          <strong class="tweet-name"></strong>
+          <span class="tweet-handle"></span>
+          <span class="tweet-index"></span>
+        </div>
+        <textarea class="tweet-text" rows="3" placeholder="What's happening?"></textarea>
+        <div class="tweet-media" hidden></div>
+        <div class="tweet-actions">
+          <span class="counter" aria-live="polite"></span>
+          <span class="spacer"></span>
+          <button type="button" class="btn btn-small" data-action="copy" title="Copy this tweet's text">Copy</button>
+          <button type="button" class="btn btn-small" data-action="add-below" title="Insert a new tweet below">+ Below</button>
+          <button type="button" class="btn btn-small btn-danger" data-action="delete" title="Delete this tweet">Delete</button>
+        </div>
+      </div>
+    </li>
+  </template>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
