@@ -6,6 +6,7 @@
   <title>tweetMgr</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2333ccff'/%3E%3Ctext x='16' y='23' font-family='Arial' font-weight='bold' font-size='20' fill='white' text-anchor='middle'%3Et%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/library.css">
 </head>
 <body>
   <header class="topbar">
@@ -31,6 +32,16 @@
     <aside class="dashboard" aria-label="Sidebar">
       <div class="dash-box" id="profile-box">
         <h3>Account</h3>
+        <div class="profile-switcher">
+          <label>Signed in as
+            <select id="profile-switch" aria-label="Switch account"></select>
+          </label>
+          <div class="profile-switcher-actions">
+            <button type="button" class="btn btn-small" id="profile-add">+ Add account</button>
+            <button type="button" class="btn btn-small btn-danger" id="profile-delete">Remove</button>
+          </div>
+          <div class="lib-confirm" id="profile-delete-confirm" hidden></div>
+        </div>
         <label>Name <input id="profile-name" type="text"></label>
         <label>Handle <span class="at-input">@<input id="profile-handle" type="text"></span></label>
         <label>Account type
@@ -43,6 +54,11 @@
       <div class="dash-box" id="threads-box">
         <h3>Your threads <button type="button" class="btn btn-small" id="new-thread">New</button></h3>
         <ul id="thread-list" class="thread-list"></ul>
+        <div class="lib-footer">
+          <button type="button" class="btn btn-small" id="import-thread" title="Open a .tweetmgr.json file exported from tweetMgr">Import…</button>
+          <input type="file" id="import-file" accept=".json,application/json" multiple hidden>
+          <span class="lib-footer-note" id="library-note"></span>
+        </div>
       </div>
 
       <div class="dash-box" id="export-box">
@@ -77,5 +93,6 @@
 
   <div id="toast" class="toast" role="status" hidden></div>
   <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/library.js"></script>
 </body>
 </html>

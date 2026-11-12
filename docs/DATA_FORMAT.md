@@ -40,6 +40,28 @@ All data lives in `data/` (or `$TWEETMGR_DATA`). Files are pretty-printed JSON a
 
 `accountType` is `free` (280), `premium` (25,000), or `custom` (uses `customLimit`).
 
+## Export file: `<title>.tweetmgr.json`
+
+The **Export** action in the thread library writes one self-contained file per thread, made for backups, moving a thread to another computer, or sharing it. Uploaded images are embedded as base64 data URLs; URL images stay as URLs.
+
+```json
+{
+  "format": "tweetmgr.thread",
+  "version": 1,
+  "exportedAt": "2026-11-12T02:00:00.000Z",
+  "thread": { "id": "th_...", "title": "Why do cells age?", "tweets": [ ... ] },
+  "images": {
+    "img_3f9a1c2b7d4e.png": { "type": "image/png", "data": "data:image/png;base64,iVBORw0K..." }
+  }
+}
+```
+
+**Import** always creates a new thread in the active account (fresh ids, so nothing is overwritten) and copies embedded images into `data/images/` under new ids. Import also accepts a bare thread file copied out of `data/threads/`. The pure logic lives in `public/js/library-core.js` and runs in Node too, so scripts can build or read these files without the browser.
+
+## Deleting
+
+Deleting a thread also deletes uploaded images that no other thread (in any account) still uses; duplicated threads share image files until then. Removing an account deletes its threads the same way.
+
 ## HTTP API
 
 The local server (`npm start`) exposes the same data at `http://localhost:4321/api/...`; see the header of `server.js` for routes.

@@ -1,0 +1,87 @@
+/* Thread library and account switcher. Uses the tokens from theme.css so a
+   theme change carries over; layout-only rules live here. */
+
+/* Account switcher */
+.profile-switcher { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dotted var(--dash-border); }
+.profile-switcher label { margin-bottom: 6px; }
+.profile-switcher-actions { display: flex; gap: 6px; }
+.profile-switcher-actions .btn[disabled] { opacity: 0.5; cursor: default; }
+
+/* Thread list items */
+.thread-list { max-height: 340px; }
+.thread-list .lib-item { border-radius: 3px; margin-bottom: 1px; }
+.thread-list .lib-item.is-active,
+.thread-list .lib-item.is-open { background: var(--panel); }
+.lib-row { display: flex; align-items: stretch; }
+.thread-list li a.lib-open {
+  flex: 1;
+  min-width: 0;
+  display: block;
+  padding: 5px 6px;
+  white-space: normal;
+}
+.thread-list li a.lib-open:hover { text-decoration: none; }
+.thread-list li a.lib-open:hover .lib-title { text-decoration: underline; }
+.thread-list li.is-active a.lib-open { background: transparent; }
+.lib-title {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lib-item.is-active .lib-title { font-weight: bold; color: var(--text); }
+.thread-list li a .lib-meta { display: block; margin: 1px 0 0; color: var(--muted); font-size: 11px; font-weight: normal; }
+
+.lib-toggle {
+  flex: none;
+  width: 24px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  cursor: pointer;
+}
+.lib-item:hover .lib-toggle,
+.lib-item.is-open .lib-toggle { border-color: var(--btn-border); background: linear-gradient(180deg, var(--btn-top), var(--btn-bottom)); color: var(--text); }
+.lib-toggle:focus-visible { outline: none; border-color: var(--focus); box-shadow: 0 0 4px var(--focus); }
+
+.lib-actions { display: flex; flex-wrap: wrap; gap: 2px 0; padding: 0 6px 6px; font-size: 12px; }
+.lib-action {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--link);
+  font: inherit;
+  cursor: pointer;
+}
+.lib-action:not(:last-child)::after { content: "·"; color: var(--muted); margin: 0 6px; }
+.lib-action:hover { text-decoration: underline; }
+.lib-action.is-danger { color: var(--over); }
+
+.lib-rename {
+  width: 100%;
+  padding: 5px 6px;
+  border: 1px solid var(--focus);
+  border-radius: 3px;
+  box-shadow: 0 0 4px var(--focus);
+  font: inherit;
+  outline: none;
+}
+
+.lib-confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 6px;
+  border: 1px solid var(--over-bg);
+  border-radius: 3px;
+  background: #fff6f6;
+  font-size: 12px;
+}
+.lib-confirm span { flex-basis: 100%; color: var(--over); }
+
+.lib-footer { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.lib-footer-note { margin-left: auto; color: var(--muted); font-size: 11px; }

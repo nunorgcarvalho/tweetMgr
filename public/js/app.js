@@ -34,7 +34,13 @@ function scheduleSave() {
   saveTimer = setTimeout(saveNow, 400);
 }
 
-async function saveNow() {
+/** Forget unsaved edits to the open thread (used right before deleting it). */
+export function cancelPendingSave() {
+  clearTimeout(saveTimer);
+  state.dirty = false;
+}
+
+export async function saveNow() {
   clearTimeout(saveTimer);
   if (!state.thread) return;
   touch(state.thread);
@@ -49,17 +55,18 @@ async function saveProfile() {
   await state.store.saveProfile(state.profile);
 }
 
-async function loadThread(id) {
+export async function loadThread(id) {
   if (state.dirty) await saveNow();
   const thread = await state.store.getThread(id);
   if (!thread) return;
   state.thread = thread;
   await state.store.setSetting('activeThreadId', id);
+  await loadImagesFor([thread]);
   renderThread();
   await refreshThreadList();
 }
 
-async function newThread() {
+export async function newThread() {
   if (state.dirty) await saveNow();
   state.thread = createThread(state.profile.id);
   await state.store.saveThread(state.thread);
@@ -71,6 +78,33 @@ async function newThread() {
 
 // Files on disk may be edited by the CLI or another agent. When the window
 // regains focus, pick up those edits if there are no unsaved local changes.
+/** IndexedDbStore needs object URLs made before render; HttpStore does not. */
+export async function loadImagesFor(threads) {
+  if (!state.store.loadImages) return;
+  await state.store.loadImages(threads.flatMap((t) => t.tweets.flatMap((tw) => (tw.media || []).map((m) => m.imageId).filter(Boolean))));
+}
+
+/** Make another profile active and open its most recent thread. */
+export async function switchProfile(id) {
+  if (state.dirty) await saveNow();
+  const profile = await state.store.getProfile(id);
+  if (!profile) return;
+  state.profile = profile;
+  await state.store.setSetting('activeProfileId', id);
+  const threads = await state.store.listThreads(id);
+  state.thread = threads[0];
+  if (!state.thread) {
+    state.thread = createThread(id);
+    await state.store.saveThread(state.thread);
+  }
+  await state.store.setSetting('activeThreadId', state.thread.id);
+  await loadImagesFor([state.thread]);
+  renderProfile();
+  renderThread();
+  await refreshThreadList();
+  for (const hook of profileHooks) hook(state.profile);
+}
+
 async function syncFromStore() {
   if (!state.thread || state.dirty) return;
   const fresh = await state.store.getThread(state.thread.id);
@@ -139,7 +173,7 @@ export function renderThread() {
   updateMeta();
 }
 
-function renderProfile() {
+export function renderProfile() {
   const p = state.profile;
   $('#profile-name').value = p.name;
   $('#profile-handle').value = p.handle;
@@ -149,8 +183,9 @@ function renderProfile() {
   $('#limit-hint').textContent = `Each tweet can be up to ${limit().toLocaleString()} characters. Links count as 23; emoji and CJK characters count as 2.`;
 }
 
-async function refreshThreadList() {
+export async function refreshThreadList() {
   state.threads = await state.store.listThreads(state.profile.id);
+  if (threadListRenderer) return threadListRenderer(state.threads);
   const ul = $('#thread-list');
   if (!state.threads.length) {
     ul.innerHTML = '<li class="empty">No saved threads yet.</li>';
@@ -199,6 +234,22 @@ export function mutateThread(fn) {
   renderThread();
   scheduleSave();
 }
+
+let threadListRenderer = null;
+/** The thread library module replaces the sidebar list renderer. */
+export function setThreadListRenderer(fn) {
+  threadListRenderer = fn;
+  if (booted) refreshThreadList();
+}
+
+const profileHooks = [];
+/** Called with the active profile after boot, a switch, or an edit. */
+export function onProfileChange(hook) {
+  profileHooks.push(hook);
+  if (booted) hook(state.profile);
+}
+
+let booted = false;
 
 const tweetRenderHooks = [];
 /** Feature modules can decorate each rendered tweet card. */
@@ -261,7 +312,7 @@ function bindEvents() {
     toast('Thread copied as JSON for the typer');
   });
 
-  const onProfileChange = async () => {
+  const handleProfileInput = async () => {
     const p = state.profile;
     p.name = $('#profile-name').value;
     p.handle = $('#profile-handle').value.replace(/^@/, '');
@@ -270,9 +321,10 @@ function bindEvents() {
     renderProfile();
     renderThread();
     await saveProfile();
+    for (const hook of profileHooks) hook(p);
   };
-  for (const id of ['#profile-name', '#profile-handle', '#profile-limit']) $(id).addEventListener('input', onProfileChange);
-  $('#profile-type').addEventListener('change', onProfileChange);
+  for (const id of ['#profile-name', '#profile-handle', '#profile-limit']) $(id).addEventListener('input', handleProfileInput);
+  $('#profile-type').addEventListener('change', handleProfileInput);
 
   window.addEventListener('focus', syncFromStore);
   window.addEventListener('beforeunload', () => {
@@ -308,15 +360,15 @@ async function boot() {
     state.thread = createThread(state.profile.id);
     await state.store.saveThread(state.thread);
   }
-  if (state.store.loadImages) {
-    await state.store.loadImages(threads.flatMap((t) => t.tweets.flatMap((tw) => tw.media.map((m) => m.imageId).filter(Boolean))));
-  }
+  await loadImagesFor(threads);
 
   renderProfile();
   renderThread();
-  await refreshThreadList();
   bindEvents();
   setStatus('All changes saved');
+  booted = true;
+  await refreshThreadList();
+  for (const hook of profileHooks) hook(state.profile);
 
   // Hook for scripts and the typing macro (e.g. from the dev console).
   window.tweetMgr = { getThread: () => structuredClone(state.thread), toTyperJson: () => toTyperJson(state.thread) };

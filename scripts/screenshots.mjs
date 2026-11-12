@@ -19,6 +19,7 @@ const dir = await mkdtemp(join(tmpdir(), 'tweetmgr-shots-'));
 const store = await new FsStore(dir).init();
 const profile = { id: 'p_demo', name: 'Ada Researcher', handle: 'ada_studies', accountType: 'free', customLimit: 280, createdAt: '2026-11-01T00:00:00Z', updatedAt: '2026-11-01T00:00:00Z' };
 await store.saveProfile(profile);
+await store.saveProfile({ ...profile, id: 'p_lab', name: 'Ada (lab account)', handle: 'ada_lab', accountType: 'premium' });
 await store.setSetting('activeProfileId', profile.id);
 const mk = (id, title, texts, updatedAt) => ({
   id, profileId: profile.id, title, createdAt: updatedAt, updatedAt, schemaVersion: 1,
@@ -43,6 +44,14 @@ try {
   await page.goto(url);
   await page.waitForSelector('.tweet');
   await page.screenshot({ path: join(outDir, 'composer.png') });
+
+  // Thread library: the action row on one thread, then a delete confirmation.
+  const sidebar = page.locator('.dashboard');
+  await page.click('.lib-item[data-id="th_b"] .lib-toggle');
+  await sidebar.screenshot({ path: join(outDir, 'library-actions.png') });
+  await page.click('.lib-item[data-id="th_b"] [data-act="delete"]');
+  await page.click('#profile-delete');
+  await sidebar.screenshot({ path: join(outDir, 'library-confirm.png') });
 
   const phone = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
   await phone.goto(url);

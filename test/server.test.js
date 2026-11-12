@@ -56,3 +56,11 @@ test('settings persist', async () => {
   const res = await fetch(`${base}/api/settings/activeThreadId`);
   assert.deepEqual(await res.json(), { value: 'th_9' });
 });
+
+test('profiles can be deleted', async () => {
+  await fetch(`${base}/api/profiles/p_gone`, { method: 'PUT', body: JSON.stringify({ name: 'Gone' }) });
+  let res = await fetch(`${base}/api/profiles/p_gone`, { method: 'DELETE' });
+  assert.equal(res.status, 204);
+  res = await fetch(`${base}/api/profiles/p_gone`);
+  assert.equal(res.status, 404);
+});
