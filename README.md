@@ -31,6 +31,21 @@ The app picks up changes made to these files by other tools when you switch back
 
 If the app is opened without the local server (for example from a future hosted version), it falls back to storing everything in the browser's IndexedDB.
 
+## Command line and AI agents
+
+`bin/tweetmgr.js` lets scripts and AI agents list, read, edit, and check threads, attach figures with alt text, and export for the typer:
+
+```sh
+npm link                                   # optional: adds a `tweetmgr` command
+tweetmgr list
+tweetmgr show latest
+tweetmgr edit latest 2 "Revised second tweet"
+tweetmgr image add latest 3 ./fig.png --alt "Bar chart of results"
+tweetmgr check latest
+```
+
+Run `tweetmgr --help` for every command, and see [docs/AGENT_GUIDE.md](docs/AGENT_GUIDE.md) for a guide aimed at agents.
+
 ## Character limits
 
 Choose your account type in the sidebar: Free (280), Premium (25,000), or a custom limit. Counting follows Twitter/X's rules: links count as 23, emoji and CJK characters count as 2.
