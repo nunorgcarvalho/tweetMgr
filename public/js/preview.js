@@ -4,7 +4,7 @@
 //   - the summary card in the sidebar (who you are, how big the thread is).
 // Both read the shared state from app.js and refresh whenever the composer
 // re-renders or the text changes.
-import { getState } from './app.js';
+import { getState, renderThread } from './app.js';
 import { tweetLength } from './counter.js';
 import { charLimit } from './model.js';
 
@@ -113,19 +113,27 @@ function renderSummary() {
   $('#stat-over-item').classList.toggle('is-over', over > 0);
 }
 
-let view = 'compose';
+// Three views share the content column: the continuous draft (default, with
+// its own live preview beside it), the per-tweet cards, and the full preview.
+let view = 'draft';
 function setView(next) {
   view = next;
   const preview = view === 'preview';
+  const cards = view === 'compose';
   if (preview) renderPreview();
-  $('#tweets').hidden = preview;
-  $('#compose-footer').hidden = preview;
+  $('#draft-view').hidden = view !== 'draft';
+  $('#tweets').hidden = !cards;
+  $('#compose-footer').hidden = !cards;
   $('#preview').hidden = !preview;
+  document.body.dataset.view = view;
   for (const tab of document.querySelectorAll('.tab')) {
     const active = tab.dataset.view === view;
     tab.classList.toggle('is-active', active);
     tab.setAttribute('aria-selected', String(active));
   }
+  // The cards measure their text boxes, which only works once visible.
+  if (cards) renderThread();
+  document.dispatchEvent(new CustomEvent('tweetmgr:view', { detail: view }));
 }
 
 function refresh() {
@@ -141,4 +149,6 @@ $('.tabs').addEventListener('click', (e) => {
 // load), and fires input events while typing; both are our cue to refresh.
 new MutationObserver(refresh).observe($('#tweets'), { childList: true });
 document.addEventListener('input', refresh);
+document.addEventListener('tweetmgr:edit', refresh);
+setView(view);
 refresh();

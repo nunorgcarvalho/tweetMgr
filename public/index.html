@@ -9,8 +9,9 @@
   <link rel="stylesheet" href="css/media.css">
   <link rel="stylesheet" href="css/library.css">
   <link rel="stylesheet" href="css/arrange.css">
+  <link rel="stylesheet" href="css/draft.css">
 </head>
-<body>
+<body data-view="draft">
   <header class="topbar">
     <div class="topbar-inner">
       <a class="wordmark" href="/"><svg class="wordmark-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="6" y="3" width="20" height="5" rx="2.5" fill="#fff"/><rect x="6" y="24" width="20" height="5" rx="2.5" fill="#fff"/><rect x="9" y="8" width="14" height="16" fill="#33ccff"/><path d="M9 12.5l14-2.5M9 16.5l14-2.5M9 20.5l14-2.5" stroke="#0e98cf" stroke-width="1.5"/><path d="M23 19.5c5 .5 6.5 4 3.5 7.5" stroke="#33ccff" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>tweet<span>Mgr</span></a>
@@ -26,15 +27,42 @@
         <span class="thread-meta" id="thread-meta"></span>
       </div>
       <div class="tabs" role="tablist" aria-label="View">
-        <button type="button" class="tab is-active" role="tab" aria-selected="true" data-view="compose">Compose</button>
+        <button type="button" class="tab is-active" role="tab" aria-selected="true" data-view="draft">Draft</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-view="compose">Tweet cards</button>
         <button type="button" class="tab" role="tab" aria-selected="false" data-view="preview">Preview</button>
       </div>
-      <ol id="tweets" class="tweets"></ol>
+      <div id="draft-view" class="draft-view">
+        <div class="draft-col">
+          <div class="draft-toolbar">
+            <button type="button" class="btn btn-small" id="draft-cut" title="Start a new tweet at the cursor (Ctrl/⌘+Enter)">✂ Cut here</button>
+            <button type="button" class="btn btn-small" id="draft-photo" title="Insert photos at the cursor (or paste / drop them into the draft)">Photo</button>
+            <button type="button" class="btn btn-small" id="draft-url-open" title="Insert an image by its web address (stored as a link)">Image URL</button>
+            <input type="file" id="draft-file" accept="image/png,image/jpeg,image/gif,image/webp" multiple hidden>
+            <span class="spacer"></span>
+            <button type="button" class="btn btn-small btn-quiet" id="draft-reflow" title="Forget the cuts you placed and let every tweet fill up automatically">Reset cuts</button>
+          </div>
+          <form class="draft-url-form" id="draft-url-form" hidden>
+            <input type="url" class="input" id="draft-url-input" placeholder="https://example.com/figure.png" aria-label="Image URL" required>
+            <button type="submit" class="btn btn-small btn-primary">Insert</button>
+            <button type="button" class="btn btn-small" id="draft-url-cancel">Cancel</button>
+          </form>
+          <div class="draft-sheet" id="draft-sheet">
+            <div class="draft-editor" id="draft-editor" role="textbox" aria-multiline="true" aria-label="Thread draft" spellcheck="true" data-placeholder="Write the whole thread here. Cut lines appear wherever a tweet fills up."></div>
+            <div class="draft-overlay" id="draft-overlay"></div>
+          </div>
+          <p class="draft-tip"><span class="draft-key draft-key-auto"></span> automatic cut <span class="draft-key draft-key-pinned"></span> cut you placed <span class="draft-key draft-key-limit"></span> character limit. Drag a knob, or use ▲ ▼ to move a sentence across.</p>
+        </div>
+        <div class="draft-preview-col" id="draft-preview-col">
+          <p class="preview-note">Live preview</p>
+          <ol id="draft-preview" class="tweets timeline"></ol>
+        </div>
+      </div>
+      <ol id="tweets" class="tweets" hidden></ol>
       <div id="preview" hidden>
         <p class="preview-note">This is how the thread will read once it is posted.</p>
         <ol id="preview-tweets" class="tweets timeline"></ol>
       </div>
-      <div class="content-footer" id="compose-footer">
+      <div class="content-footer" id="compose-footer" hidden>
         <button type="button" class="btn" id="add-tweet">+ Add tweet</button>
       </div>
     </section>
@@ -123,5 +151,6 @@
   <script type="module" src="js/library.js"></script>
   <script type="module" src="js/arrange.js"></script>
   <script type="module" src="js/preview.js"></script>
+  <script type="module" src="js/draft.js"></script>
 </body>
 </html>

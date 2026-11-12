@@ -1,0 +1,293 @@
+/* The Draft view (public/js/draft.js): one continuous draft beside a live
+   preview. Uses theme tokens from theme.css only. */
+
+/* The draft needs room for two columns, so the page grows while it is open. */
+body[data-view="draft"] { --page-width: 1280px; }
+body:not([data-view="compose"]) .arrange-toolbar { display: none; }
+
+.draft-view {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+}
+.draft-col { min-width: 0; display: flex; flex-direction: column; border-right: 1px solid var(--rule); }
+
+.draft-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 41px;
+  padding: 0 16px;
+  background: #fafdff;
+  border-bottom: 1px solid var(--rule);
+}
+.draft-url-form {
+  display: flex;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--sky-faint);
+  border-bottom: 1px solid var(--rule);
+}
+.draft-url-form .input { flex: 1; }
+
+/* ---------- The sheet: gutter, text, and the overlay of cut lines ---------- */
+.draft-sheet {
+  --gutter-left: 40px;
+  --gutter-right: 64px;
+  position: relative;
+  flex: 1;
+  background:
+    linear-gradient(90deg, var(--sky-faint) 0, var(--sky-faint) calc(var(--gutter-left) - 8px), transparent calc(var(--gutter-left) - 8px)),
+    #fff;
+}
+.draft-sheet::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--gutter-left) - 8px);
+  border-left: 1px solid var(--sky-pale);
+}
+.draft-editor {
+  position: relative;
+  min-height: 420px;
+  padding: 14px var(--gutter-right) 56px var(--gutter-left);
+  font: 15px/28px var(--font);
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  outline: none;
+  caret-color: var(--link);
+}
+.draft-editor.is-empty::before {
+  content: attr(data-placeholder);
+  position: absolute;
+  color: var(--faint);
+  pointer-events: none;
+}
+.draft-editor::highlight(draft-hover) { background-color: var(--fresh); }
+::highlight(draft-hover) { background-color: var(--fresh); }
+
+.draft-overlay { position: absolute; inset: 0; pointer-events: none; }
+.draft-overlay > * { position: absolute; }
+
+/* Cut lines. Dashed and pale when automatic, solid when you placed them. */
+.cut-line { height: 0; border-top: 2px dashed var(--rule-sky); margin-top: -1px; }
+.cut-tick { width: 0; border-left: 2px dashed var(--rule-sky); margin-left: -1px; margin-top: -1px; }
+.cut-line.is-pinned,
+.cut-tick.is-pinned { border-style: solid; border-color: var(--primary-bottom); }
+
+.cut-knob {
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  padding: 0;
+  background: linear-gradient(180deg, #fff, var(--sky-pale));
+  border: 2px solid var(--rule-sky);
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+}
+.cut-knob.is-pinned { background: linear-gradient(180deg, var(--primary-top), var(--primary-bottom)); border-color: var(--primary-border); }
+.cut-knob:hover,
+.cut-knob:focus-visible { outline: none; transform: scale(1.25); box-shadow: var(--shadow-focus); }
+.draft-sheet.is-cutting,
+.draft-sheet.is-cutting .cut-knob { cursor: grabbing; }
+.draft-sheet.is-cutting .draft-editor { user-select: none; }
+
+/* Sentence-step buttons, riding on the cut line in the right gutter. */
+.cut-tools {
+  right: 6px;
+  display: flex;
+  height: 18px;
+  background: #fff;
+  border: 1px solid var(--rule-sky);
+  border-radius: 9px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  pointer-events: auto;
+}
+.cut-tools.is-pinned { border-color: var(--primary-bottom); }
+.cut-tool {
+  width: 17px;
+  height: 16px;
+  padding: 0;
+  color: var(--link);
+  font: bold 8px/16px var(--font);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.cut-tool + .cut-tool { border-left: 1px solid var(--sky-pale); }
+.cut-tool[data-act="unpin"] { color: var(--muted); font-size: 12px; }
+.cut-tool:hover { color: #fff; background: var(--primary-bottom); }
+.cut-tool[data-act="unpin"]:hover { background: var(--over); }
+.cut-tool:focus-visible { outline: none; background: var(--sky-pale); }
+
+/* Tweet numbers in the left gutter. */
+.cut-badge {
+  left: 4px;
+  width: 24px;
+  height: 18px;
+  color: var(--text-soft);
+  font: bold 11px/18px var(--font);
+  text-align: center;
+  background: #fff;
+  border: 1px solid var(--rule-sky);
+  border-radius: 9px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.cut-badge.is-current {
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+  background: linear-gradient(180deg, var(--primary-top), var(--primary-bottom));
+  border-color: var(--primary-border);
+}
+
+/* The exact character where a tweet would hit the limit. */
+.cut-limit { width: 0; border-left: 2px dotted var(--over); opacity: 0.45; }
+.cut-limit::after {
+  content: attr(data-limit);
+  position: absolute;
+  left: -2px;
+  bottom: 100%;
+  padding: 0 4px;
+  color: #fff;
+  font: bold 9px/12px var(--font);
+  background: var(--over);
+  border-radius: 2px 2px 2px 0;
+  opacity: 0;
+}
+.draft-sheet:hover .cut-limit,
+.draft-sheet.is-cutting .cut-limit { opacity: 0.9; }
+.draft-sheet.is-cutting .cut-limit::after { opacity: 1; }
+
+.draft-drop-caret { width: 3px; margin-left: -1px; background: var(--brand); border-radius: 2px; box-shadow: var(--shadow-focus); }
+
+/* ---------- Image chips in the text ---------- */
+.draft-img {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  margin: 0 3px;
+  padding-right: 4px;
+  vertical-align: middle;
+  font: bold 11px/20px var(--font);
+  color: var(--text-soft);
+  white-space: nowrap;
+  background: linear-gradient(180deg, #fff, #ececec);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-small);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  cursor: grab;
+  user-select: all;
+  touch-action: none;
+}
+.draft-img:hover { border-color: var(--focus); box-shadow: var(--shadow-focus); }
+.draft-img img { width: 30px; height: 20px; object-fit: cover; border-radius: 2px 0 0 2px; background: #e4eef3; }
+.draft-img::before { content: attr(data-label); order: 1; max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
+.draft-img::after {
+  content: attr(data-alt);
+  order: 2;
+  padding: 0 4px;
+  color: var(--warn);
+  font-size: 9px;
+  line-height: 13px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  background: #ffd76a;
+  border-radius: 3px;
+}
+.draft-img.has-alt::after { color: #fff; background: rgba(0, 0, 0, 0.75); }
+
+.draft-ghost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 40;
+  width: 72px;
+  height: 50px;
+  padding: 2px;
+  background: #fff;
+  border: 1px solid var(--rule-sky);
+  border-radius: var(--radius-small);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  rotate: -3deg;
+}
+.draft-ghost img { display: block; width: 100%; height: 100%; object-fit: cover; }
+body.is-dragging-image,
+body.is-dragging-image * { cursor: grabbing !important; user-select: none; }
+
+.draft-tip {
+  margin: 0;
+  padding: 8px 16px;
+  color: var(--text-soft);
+  font-size: 11px;
+  background: var(--sky-faint);
+  border-top: 1px solid var(--rule);
+  border-radius: 0 0 0 var(--radius);
+}
+.draft-key { display: inline-block; width: 18px; height: 0; margin: 0 3px 3px 8px; vertical-align: middle; border-top: 2px dashed var(--rule-sky); }
+.draft-key:first-child { margin-left: 0; }
+.draft-key-pinned { border-top: 2px solid var(--primary-bottom); }
+.draft-key-limit { width: 0; height: 12px; margin-bottom: 0; border-top: 0; border-left: 2px dotted var(--over); }
+
+/* ---------- Live preview column ---------- */
+.draft-preview-col {
+  position: sticky;
+  top: 41px;
+  align-self: start;
+  min-width: 0;
+  max-height: calc(100vh - 41px);
+  overflow-y: auto;
+  background: #fff;
+}
+.draft-preview-col .preview-note { position: sticky; top: 0; z-index: 3; height: 41px; padding: 0 16px; font-size: 11px; font-weight: bold; line-height: 40px; }
+.draft-preview-col .media-item.is-broken img { visibility: hidden; }
+.draft-preview-col .tweet { cursor: pointer; }
+.draft-preview-col .tweet.is-current { background: var(--selected); box-shadow: inset 3px 0 0 var(--brand); }
+.draft-preview-col .tweet.is-drop-target { background: var(--fresh); box-shadow: inset 0 0 0 2px var(--brand); }
+.draft-preview-col .tweet-index { margin-left: auto; }
+.draft-preview-col .tweet-preview-text:empty::before { content: "Nothing here yet."; }
+.draft-preview-col .media-item { width: auto; height: auto; border: 0; border-radius: 0; box-shadow: none; cursor: grab; touch-action: none; }
+.draft-preview-col .media-item:hover { outline: 2px solid var(--focus); outline-offset: -2px; }
+.draft-preview-col .tweet-stamp { display: flex; align-items: center; gap: 8px; min-height: 22px; font-variant-numeric: tabular-nums; }
+.draft-preview-col .tweet-stamp .meter { width: 64px; flex: none; }
+.draft-preview-col .tweet-stamp .meter-fill { display: block; }
+.draft-preview-col .tweet .btn-quiet { opacity: 1; }
+
+/* ---------- Image details dialog ---------- */
+.draft-dialog-picture {
+  display: grid;
+  place-items: center;
+  max-height: 260px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  background: #e4eef3;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-small);
+}
+.draft-dialog-picture img { display: block; max-width: 100%; max-height: 258px; }
+.draft-dialog-info { margin: 0 0 10px; color: var(--text-soft); font-size: 12px; overflow-wrap: anywhere; }
+.draft-dialog-move { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 12px; }
+.draft-dialog-where { margin-right: auto; font-weight: bold; }
+.draft-dialog-label { display: block; margin-bottom: 3px; color: var(--text-soft); font-size: 12px; font-weight: bold; }
+.draft-dialog textarea { resize: vertical; }
+.draft-dialog-count { margin-right: auto; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.draft-dialog-count.is-over { color: var(--over); font-weight: bold; }
+
+/* ---------- Narrow screens: preview goes under the draft ---------- */
+@media (max-width: 900px) {
+  .draft-view { grid-template-columns: minmax(0, 1fr); }
+  .draft-col { border-right: 0; }
+  .draft-editor { min-height: 240px; }
+  .draft-tip { border-radius: 0; }
+  .draft-preview-col { position: static; max-height: none; border-top: 1px solid var(--rule-strong); }
+  .draft-sheet { --gutter-right: 60px; --gutter-left: 38px; }
+}
