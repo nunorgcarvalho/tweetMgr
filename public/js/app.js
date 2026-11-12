@@ -204,6 +204,7 @@ const tweetRenderHooks = [];
 /** Feature modules can decorate each rendered tweet card. */
 export function onRenderTweet(hook) {
   tweetRenderHooks.push(hook);
+  if (state.thread) renderThread(); // registered after the first render
 }
 
 // ---------- Events ----------

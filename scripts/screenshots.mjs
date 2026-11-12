@@ -44,6 +44,18 @@ try {
   await page.waitForSelector('.tweet');
   await page.screenshot({ path: join(outDir, 'composer.png') });
 
+  if (await page.$('#open-draft')) {
+    await page.click('#open-draft');
+    await page.fill(
+      '#draft-text',
+      'Telomeres shorten every time a cell divides. Eventually the cell stops dividing, a limit first described in 1961.\n\n' +
+        'Why does that matter? Because the same mechanism that protects us from runaway cell growth may also be part of why tissues age. ' +
+        'Researchers have spent decades trying to untangle which comes first.\n---\nNext up: what this means for regenerative medicine.',
+    );
+    await page.check('#draft-numbering');
+    await page.screenshot({ path: join(outDir, 'split-draft.png'), clip: { x: 0, y: 0, width: 1100, height: 560 } });
+  }
+
   const phone = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
   await phone.goto(url);
   await phone.waitForSelector('.tweet');

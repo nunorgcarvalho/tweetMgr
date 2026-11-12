@@ -38,3 +38,10 @@ Choose your account type in the sidebar: Free (280), Premium (25,000), or a cust
 ## Typing macro
 
 "Copy for typer" copies the thread as JSON for the typing macro in `typer/`, which types each tweet into X's composer instead of pasting it.
+
+## Splitting and arranging
+
+- **Split a long draft…** turns a pasted essay into tweets, breaking at paragraphs, then sentences, then words. A line with just `---` forces a break; "Number tweets" adds `1/n` suffixes.
+- **Fit ↓** appears on a tweet that's over the limit and moves the extra text into the next tweet. **Fit all to limit** does it for the whole thread.
+- **Split** (or Ctrl/⌘+Enter) splits at the cursor; **Merge ↓** (or Backspace at the start of a tweet) joins two tweets.
+- Reorder with ▲/▼, Alt+↑/↓, or by dragging the handle on the left of a tweet.
