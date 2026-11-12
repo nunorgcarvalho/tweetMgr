@@ -10,6 +10,7 @@
 // Interface (all methods async unless noted):
 //   kind                         'files' | 'browser'
 //   listProfiles()               getProfile(id)          saveProfile(profile)
+//   deleteProfile(id)
 //   listThreads(profileId)       getThread(id)           saveThread(thread)
 //   deleteThread(id)
 //   putImage(blob, name) -> id   imageUrl(id) -> string  deleteImage(id)
@@ -54,6 +55,9 @@ export class HttpStore {
   }
   saveProfile(p) {
     return this._put(`/profiles/${this._id(p.id)}`, p);
+  }
+  deleteProfile(id) {
+    return this._fetch(`/profiles/${this._id(id)}`, { method: 'DELETE' });
   }
   listThreads(profileId) {
     return this._fetch(`/threads${profileId ? `?profileId=${encodeURIComponent(profileId)}` : ''}`);
@@ -136,6 +140,9 @@ export class IndexedDbStore {
   }
   saveProfile(profile) {
     return this._tx('profiles', 'readwrite', (s) => req(s.put(profile))).then(() => profile);
+  }
+  deleteProfile(id) {
+    return this._tx('profiles', 'readwrite', (s) => req(s.delete(id)));
   }
 
   // Threads (newest first)

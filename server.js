@@ -6,7 +6,7 @@
 //
 // API (JSON unless noted):
 //   GET    /api/health
-//   GET    /api/profiles                PUT /api/profiles/:id
+//   GET    /api/profiles                GET/PUT/DELETE /api/profiles/:id
 //   GET    /api/threads[?profileId=]    GET/PUT/DELETE /api/threads/:id
 //   POST   /api/images  (raw image body; ?name=file.png)  -> { id }
 //   GET    /api/images/:id  (image bytes)     DELETE /api/images/:id
@@ -75,6 +75,10 @@ export function createApp(store) {
         return p ? send(res, 200, p) : send(res, 404, { error: 'Not found' });
       }
       if (id && m === 'PUT') return send(res, 200, await store.saveProfile({ ...(await readJsonBody(req)), id }));
+      if (id && m === 'DELETE') {
+        await store.deleteProfile(id);
+        return send(res, 204);
+      }
     }
 
     if (resource === 'threads') {
