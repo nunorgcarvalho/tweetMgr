@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>tweetMgr style guide</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    /* Layout for this reference page only; components come from theme.css. */
+    .sg { max-width: 960px; margin: 24px auto 40px; padding: 0 16px; }
+    .sg-panel { background: var(--panel); border-radius: var(--radius); box-shadow: var(--shadow-panel); overflow: hidden; }
+    .sg-intro { padding: 20px 24px; background: linear-gradient(180deg, #fdfdfd, #f3f3f3); border-bottom: 1px solid var(--rule); }
+    .sg-intro h1 { margin: 0 0 4px; font: 300 26px/32px var(--font); }
+    .sg-intro p { margin: 0; max-width: 640px; color: var(--text-soft); }
+    .sg-section { padding: 20px 24px; border-bottom: 1px solid var(--rule); }
+    .sg-section:last-child { border-bottom: 0; }
+    .sg-section > h2 { margin: 0 0 4px; font: bold 16px/20px var(--font); }
+    .sg-section > p { margin: 0 0 14px; max-width: 640px; color: var(--text-soft); }
+    .sg-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .sg-row:last-child { margin-bottom: 0; }
+    .sg-label { width: 110px; color: var(--muted); font-size: 11px; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase; }
+    .sg-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 10px; }
+    .sg-swatch { border: 1px solid var(--rule); border-radius: var(--radius-small); overflow: hidden; font-size: 11px; line-height: 15px; }
+    .sg-swatch i { display: block; height: 44px; border-bottom: 1px solid var(--rule); }
+    .sg-swatch b, .sg-swatch code { display: block; padding: 0 7px; }
+    .sg-swatch b { padding-top: 5px; }
+    .sg-swatch code { padding-bottom: 5px; color: var(--muted); font-family: Monaco, Consolas, "Liberation Mono", monospace; }
+    .sg-type { display: grid; grid-template-columns: 150px 1fr; gap: 10px 16px; align-items: baseline; }
+    .sg-type > span { color: var(--muted); font-size: 11px; }
+    .sg-frame { border: 1px solid var(--rule); border-radius: var(--radius-small); overflow: hidden; }
+    .sg-dash { width: 310px; border-radius: var(--radius); border: 1px solid var(--dash-border); }
+    .sg-split { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+    .sg-split > * { flex: 1; min-width: 280px; }
+    .sg-modal-stage { position: relative; padding: 24px; background: rgba(0, 0, 0, 0.35); border-radius: var(--radius-small); display: flex; justify-content: center; }
+    .sg .tweet .btn-quiet { opacity: 1; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="wordmark" href="/"><svg class="wordmark-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="6" y="3" width="20" height="5" rx="2.5" fill="#fff"/><rect x="6" y="24" width="20" height="5" rx="2.5" fill="#fff"/><rect x="9" y="8" width="14" height="16" fill="#33ccff"/><path d="M9 12.5l14-2.5M9 16.5l14-2.5M9 20.5l14-2.5" stroke="#0e98cf" stroke-width="1.5"/><path d="M23 19.5c5 .5 6.5 4 3.5 7.5" stroke="#33ccff" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>tweet<span>Mgr</span></a>
+      <span class="topbar-note">Style guide</span>
+      <span class="topbar-status">Early Bird theme</span>
+    </div>
+  </header>
+
+  <div class="sg">
+    <div class="sg-panel">
+      <div class="sg-intro">
+        <h1>Early Bird</h1>
+        <p>The tweetMgr look: an original homage to early-2010s microblogging. Cloudy sky, glossy dark top bar, a white column joined to a pale-blue dashboard, small Helvetica, serif numerals, and gradient buttons. Everything on this page is built from <code>css/theme.css</code>; no logos or artwork are borrowed from any real service.</p>
+      </div>
+
+      <section class="sg-section">
+        <h2>Color</h2>
+        <p>All colors are CSS variables on <code>:root</code>. Blue is for links and the one primary action per view; red is reserved for going over the character limit.</p>
+        <div class="sg-swatches">
+          <div class="sg-swatch"><i style="background:var(--sky-deep)"></i><b>Sky, deep</b><code>--sky-deep</code></div>
+          <div class="sg-swatch"><i style="background:var(--sky)"></i><b>Sky</b><code>--sky</code></div>
+          <div class="sg-swatch"><i style="background:var(--sky-pale)"></i><b>Sky, pale</b><code>--sky-pale</code></div>
+          <div class="sg-swatch"><i style="background:var(--sky-faint)"></i><b>Sky, faint</b><code>--sky-faint</code></div>
+          <div class="sg-swatch"><i style="background:var(--brand)"></i><b>Brand</b><code>--brand</code></div>
+          <div class="sg-swatch"><i style="background:var(--link)"></i><b>Link</b><code>--link</code></div>
+          <div class="sg-swatch"><i style="background:linear-gradient(180deg,var(--primary-top),var(--primary-bottom))"></i><b>Primary</b><code>--primary-*</code></div>
+          <div class="sg-swatch"><i style="background:linear-gradient(180deg,var(--topbar-top),var(--topbar-bottom))"></i><b>Top bar</b><code>--topbar-*</code></div>
+          <div class="sg-swatch"><i style="background:var(--text)"></i><b>Text</b><code>--text</code></div>
+          <div class="sg-swatch"><i style="background:var(--text-soft)"></i><b>Text, soft</b><code>--text-soft</code></div>
+          <div class="sg-swatch"><i style="background:var(--muted)"></i><b>Muted</b><code>--muted</code></div>
+          <div class="sg-swatch"><i style="background:var(--rule)"></i><b>Rule</b><code>--rule</code></div>
+          <div class="sg-swatch"><i style="background:var(--warn)"></i><b>Warning</b><code>--warn</code></div>
+          <div class="sg-swatch"><i style="background:var(--over)"></i><b>Over limit</b><code>--over</code></div>
+          <div class="sg-swatch"><i style="background:var(--over-bg)"></i><b>Over, wash</b><code>--over-bg</code></div>
+          <div class="sg-swatch"><i style="background:var(--notice-bg)"></i><b>Notice</b><code>--notice-bg</code></div>
+          <div class="sg-swatch"><i style="background:var(--fresh)"></i><b>Fresh</b><code>--fresh</code></div>
+          <div class="sg-swatch"><i style="background:var(--success)"></i><b>Success</b><code>--success</code></div>
+        </div>
+      </section>
+
+      <section class="sg-section">
+        <h2>Type</h2>
+        <p>Helvetica Neue with Arial as the fallback, set small and tight. Georgia is used only for numerals: the character counter and the stat row.</p>
+        <div class="sg-type">
+          <span>Wordmark · 23px rounded bold</span><div><span class="wordmark" style="color:var(--brand);text-shadow:none">tweet<span style="color:var(--link)">Mgr</span></span></div>
+          <span>Title · 21px light</span><div style="font:300 21px/28px var(--font)">Why do cells age? A short thread</div>
+          <span>Tweet · 15px/20px</span><div style="font-size:15px;line-height:20px">Telomeres are protective caps on the ends of chromosomes.</div>
+          <span>Heading · 14px bold</span><div style="font:bold 14px/18px var(--font)">Your threads</div>
+          <span>Body · 13px/18px</span><div>Each tweet can be up to 280 characters. <a href="#">Links look like this.</a></div>
+          <span>Meta · 12px and 11px</span><div><span style="color:var(--muted);font-size:12px">@ada_studies · 3 tweets</span> &nbsp; <span style="color:var(--muted);font-size:11px">2 of 3 · 187 characters</span></div>
+          <span>Numerals · Georgia</span><div><span class="counter">140</span> &nbsp; <span class="counter is-warn">12</span> &nbsp; <span class="counter is-over">-27</span></div>
+        </div>
+      </section>
+
+      <section class="sg-section">
+        <h2>Buttons</h2>
+        <p>Glossy gradients with a one-pixel highlight. Use one primary button per view. Quiet buttons are for per-tweet actions and stay hidden until you point at the tweet.</p>
+        <div class="sg-row"><span class="sg-label">Default</span><button class="btn">+ Add tweet</button><button class="btn btn-small">New</button><button class="btn is-active">Pressed</button><button class="btn" disabled>Disabled</button></div>
+        <div class="sg-row"><span class="sg-label">Primary</span><button class="btn btn-primary">Save</button><button class="btn btn-primary btn-large">Copy for typer</button></div>
+        <div class="sg-row"><span class="sg-label">Quiet</span><button class="btn btn-small btn-quiet">Copy</button><button class="btn btn-small btn-quiet">+ Add below</button><button class="btn btn-small btn-quiet btn-danger">Delete</button></div>
+        <div class="sg-row"><span class="sg-label">Group</span><span class="btn-group"><button class="btn is-active">Free</button><button class="btn">Premium</button><button class="btn">Custom</button></span></div>
+        <div class="sg-row"><span class="sg-label">Tabs</span><div class="sg-frame" style="flex:1"><div class="tabs" style="padding-top:8px"><button class="tab is-active">Compose</button><button class="tab">Preview</button></div><div style="height:14px"></div></div></div>
+      </section>
+
+      <section class="sg-section">
+        <h2>Character counter</h2>
+        <p>Counts down, not up. Pale gray while there is room, dark red for the last 20 characters, bright red with a minus sign once over.</p>
+        <div class="sg-row">
+          <span class="counter">253</span><span class="tooltip">Plenty of room</span>
+          <span class="counter is-warn" style="margin-left:24px">17</span><span class="tooltip">Under 20 left</span>
+          <span class="counter is-over" style="margin-left:24px">-32</span><span class="tooltip">Over the limit</span>
+        </div>
+        <div class="sg-row"><span class="sg-label">Meter</span><div class="meter" style="width:180px"><div class="meter-fill" style="width:64%"></div></div><div class="meter is-over" style="width:180px"><div class="meter-fill" style="width:100%"></div></div></div>
+      </section>
+
+      <section class="sg-section">
+        <h2>Tweets</h2>
+        <p>A thread is a list of tweet cards tied together by a line of "string" running between the avatars. Over-limit tweets get a faint red wash, and the overflow can be marked and split off.</p>
+        <div class="sg-frame">
+          <ol class="tweets">
+            <li class="tweet">
+              <div class="avatar">A</div>
+              <div class="tweet-body">
+                <div class="tweet-head"><strong class="tweet-name">Ada Researcher</strong><span class="tweet-handle">@ada_studies</span><span class="tweet-index">1/3</span></div>
+                <textarea class="tweet-text" rows="2">Why do our cells age? Here's what surprised me most.</textarea>
+                <div class="tweet-media">
+                  <figure class="media-item"><svg viewBox="0 0 132 92" preserveAspectRatio="xMidYMid slice"><rect width="132" height="92" fill="#bfe3f2"/><circle cx="100" cy="24" r="12" fill="#fff5b8"/><path d="M0 92V62l30-22 26 18 24-28 52 40v22z" fill="#5fa85a"/><path d="M0 92V74l40-14 40 12 52-16v36z" fill="#3f8040"/></svg><button class="media-remove" aria-label="Remove image">×</button><span class="badge badge-alt">Alt</span></figure>
+                  <figure class="media-item"><svg viewBox="0 0 132 92" preserveAspectRatio="xMidYMid slice"><rect width="132" height="92" fill="#f4f4f4"/><path d="M14 78V20M14 78h108" stroke="#999" stroke-width="2"/><path d="M18 70l22-18 20 8 24-30 30-14" fill="none" stroke="#0084b4" stroke-width="3"/></svg><button class="media-remove" aria-label="Remove image">×</button><span class="badge badge-alt-missing">Add alt</span></figure>
+                  <button class="media-add"><b>+</b>Add image</button>
+                </div>
+                <div class="tweet-actions"><button class="btn btn-small btn-quiet">Copy</button><button class="btn btn-small btn-quiet">+ Add below</button><button class="btn btn-small btn-quiet btn-danger">Delete</button><span class="spacer"></span><span class="counter">228</span></div>
+              </div>
+            </li>
+            <li class="tweet is-over">
+              <div class="avatar">A</div>
+              <div class="tweet-body">
+                <div class="tweet-head"><strong class="tweet-name">Ada Researcher</strong><span class="tweet-handle">@ada_studies</span><span class="tweet-index">2/3</span></div>
+                <textarea class="tweet-text" rows="3">Telomeres are protective caps on the ends of chromosomes. Every time a cell divides, they get a little shorter, until the cell stops dividing altogether.</textarea>
+                <div class="overrun">This tweet is 32 characters over. <button class="btn btn-small">Split into two</button></div>
+                <div class="tweet-actions"><button class="btn btn-small btn-quiet">Copy</button><button class="btn btn-small btn-quiet">+ Add below</button><button class="btn btn-small btn-quiet btn-danger">Delete</button><span class="spacer"></span><span class="counter is-over">-32</span></div>
+              </div>
+            </li>
+            <li class="drop-slot" aria-hidden="true"></li>
+            <li class="tweet is-fresh">
+              <div class="avatar">A</div>
+              <div class="tweet-body">
+                <div class="tweet-head"><strong class="tweet-name">Ada Researcher</strong><span class="tweet-handle">@ada_studies</span><span class="tweet-index">3/3</span></div>
+                <textarea class="tweet-text" rows="2">A tweet that was just added or moved flashes pale yellow.</textarea>
+                <div class="tweet-actions"><button class="btn btn-small btn-quiet">Copy</button><button class="btn btn-small btn-quiet">+ Add below</button><button class="btn btn-small btn-quiet btn-danger">Delete</button><span class="spacer"></span><span class="counter">223</span></div>
+              </div>
+            </li>
+          </ol>
+          <div class="content-footer" style="border-radius:0"><button class="btn">+ Add tweet</button></div>
+        </div>
+      </section>
+
+      <section class="sg-section">
+        <h2>Timeline preview</h2>
+        <p>The read-only view: no boxes, links in blue, and a small gray stamp under each tweet.</p>
+        <div class="sg-frame">
+          <p class="preview-note" style="margin:0">This is how the thread will read once it is posted.</p>
+          <ol class="tweets timeline">
+            <li class="tweet"><div class="avatar">A</div><div class="tweet-body"><div class="tweet-head"><strong class="tweet-name">Ada Researcher</strong><span class="tweet-handle">@ada_studies</span></div><p class="tweet-preview-text">Why do our cells age? I spent a month reading about <a href="#">#telomeres</a> with <a href="#">@labmate</a>.</p><div class="tweet-stamp">1 of 2 · 74 characters</div></div></li>
+            <li class="tweet"><div class="avatar">A</div><div class="tweet-body"><div class="tweet-head"><strong class="tweet-name">Ada Researcher</strong><span class="tweet-handle">@ada_studies</span></div><p class="tweet-preview-text">Full reading list here: <a href="#">https://example.com/reading-list</a></p><div class="tweet-stamp">2 of 2 · <span class="is-over">12 over the limit</span></div></div></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="sg-section">
+        <h2>Dashboard, notices, and modal</h2>
+        <p>The dashboard is a column of boxes separated by etched lines. Notices use the pale yellow bar. Modals wear a thick translucent frame.</p>
+        <div class="sg-split">
+          <aside class="dashboard sg-dash" style="flex:0 0 310px">
+            <div class="dash-box">
+              <div class="profile-card"><div class="avatar">A</div><div><span class="profile-card-name">Ada Researcher</span><span class="profile-card-handle">@ada_studies</span></div></div>
+              <ul class="stats"><li><b>3</b><span>Tweets</span></li><li><b>505</b><span>Characters</span></li><li class="is-over"><b>1</b><span>Over limit</span></li></ul>
+            </div>
+            <div class="dash-box">
+              <h3>Account</h3>
+              <label>Account type <select><option>Free (not verified)</option></select></label>
+              <p class="dash-hint">Each tweet can be up to 280 characters.</p>
+            </div>
+            <div class="dash-box">
+              <h3>Your threads <button class="btn btn-small">New</button></h3>
+              <ul class="thread-list">
+                <li class="is-active"><a href="#">Why do cells age?<small>3</small></a></li>
+                <li><a href="#">Conference recap<small>2</small></a></li>
+                <li><a href="#">Notes on sleep and memory<small>1</small></a></li>
+              </ul>
+            </div>
+          </aside>
+          <div>
+            <div class="sg-frame" style="margin-bottom:10px"><div class="flash">Draft saved.</div><div class="flash flash-success">Thread copied for the typer.</div><div class="flash flash-error" style="border-bottom:0">Could not reach the data folder.</div></div>
+            <div class="sg-row"><span class="badge">Draft</span><span class="badge badge-info">Premium</span><span class="badge badge-success">Ready</span><span class="badge badge-alt">Alt</span><span class="badge badge-alt-missing">Add alt</span></div>
+            <div class="sg-modal-stage">
+              <div class="modal" role="dialog" aria-label="Image description">
+                <div class="modal-inner">
+                  <div class="modal-head"><h2>Describe this image</h2><button class="modal-close" aria-label="Close">×</button></div>
+                  <div class="modal-body"><textarea rows="3">A line chart of telomere length falling with each cell division.</textarea><p class="dash-hint">Alt text is read aloud by screen readers. Say what matters in the image.</p></div>
+                  <div class="modal-foot"><span class="counter">936</span><button class="btn">Cancel</button><button class="btn btn-primary">Save</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sg-section">
+        <h2>Empty state</h2>
+        <div class="sg-frame">
+          <div class="empty-state">
+            <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="6" y="3" width="20" height="5" rx="2.5" fill="#c0deed"/><rect x="6" y="24" width="20" height="5" rx="2.5" fill="#c0deed"/><rect x="9" y="8" width="14" height="16" fill="#33ccff"/><path d="M9 12.5l14-2.5M9 16.5l14-2.5M9 20.5l14-2.5" stroke="#0e98cf" stroke-width="1.5"/><path d="M23 19.5c5 .5 6.5 4 3.5 7.5" stroke="#33ccff" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+            <h2>No threads yet</h2>
+            <p>Start one and it will be saved here as you type.</p>
+            <button class="btn btn-primary btn-large">Start a thread</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <footer class="page-footer"><a href="/">Back to the composer</a></footer>
+</body>
+</html>

@@ -35,6 +35,12 @@ If the app is opened without the local server (for example from a future hosted 
 
 Choose your account type in the sidebar: Free (280), Premium (25,000), or a custom limit. Counting follows Twitter/X's rules: links count as 23, emoji and CJK characters count as 2.
 
+## Look and feel
+
+The app wears "Early Bird", an original theme that pays homage to early-2010s microblogging. Every color, font, and radius is a CSS variable at the top of `public/css/theme.css`, and `/styleguide.html` shows each component live. The Preview tab shows the thread as a read-only timeline.
+
+![Preview](docs/screenshots/preview.png)
+
 ## Typing macro
 
 "Copy for typer" copies the thread as JSON for the typing macro in `typer/`, which types each tweet into X's composer instead of pasting it.
