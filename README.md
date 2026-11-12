@@ -1,8 +1,24 @@
 # tweetMgr
 
-A small, locally run app for drafting Twitter/X threads: write tweets with a live character counter for your account type, save drafts, and reload them later. Threads are stored as plain JSON files, so scripts and AI agents can read and edit them too.
+A small, locally run app for drafting Twitter/X threads: write the whole thread as one continuous draft, see exactly where each tweet ends, and nudge the cuts until every tweet reads the way you want. Threads are stored as plain JSON files, so scripts and AI agents can read and edit them too.
 
-![Composer](docs/screenshots/composer.png)
+![Draft view](docs/screenshots/draft.png)
+
+## Writing a thread
+
+The **Draft** tab has two columns. On the left you just keep typing; on the right the tweets appear as they will be posted.
+
+- **Cut lines** run through the text at the exact character where one tweet ends and the next begins. A dashed line is automatic: it appears when a tweet fills up (at the end of a sentence where it can) and moves as you type. A red dotted tick marks the character where the tweet would hit the limit.
+- **Move a cut** by dragging its knob, or with the ▲ ▼ buttons on the line, which send one sentence to the tweet after or bring one back. A cut you move becomes solid and stays put; × (or a double-click on the knob) hands it back to automatic. Hold Alt while dragging to cut at any character instead of between words.
+- **Place a cut** anywhere with **✂ Cut here** or Ctrl/⌘+Enter. Backspace right after a cut removes it. Pasting text with `---` lines places a cut at each one.
+- **Images** go in with **Photo**, **Image URL**, paste, or drag and drop, and sit in the text as small chips. An image belongs to whichever tweet its chip falls in, so it follows its sentence when a cut moves. Drag a chip (or the picture in the preview) to move it; click either one to edit its description, see where it came from, move it a tweet up or down, or remove it.
+- Click a tweet in the preview to jump to it in the draft. Ctrl/⌘+Z undoes text, cuts, and image moves alike.
+
+![Dragging a cut](docs/screenshots/draft-cut.png)
+
+The **Tweet cards** tab keeps the one-box-per-tweet editor for reordering tweets and other structural work.
+
+![Tweet cards](docs/screenshots/composer.png)
 
 ## Run it
 
@@ -52,7 +68,7 @@ Choose your account type in the sidebar: Free (280), Premium (25,000), or a cust
 
 ## Images and alt text
 
-Each tweet can have up to four images, each with alt text (up to 1,000 characters). Add them with the **Photo** button, by pasting a screenshot into a tweet, by dragging a file or an image from a web page onto a tweet, or with **Image URL**.
+Each tweet can have up to four images, each with alt text (up to 1,000 characters). In the Tweet cards tab, add them with the **Photo** button, by pasting a screenshot into a tweet, by dragging a file or an image from a web page onto a tweet, or with **Image URL**.
 
 - Images from your computer are copied into `data/images/`. Browsers don't reveal where a file lives on disk, so the app keeps its own copy.
 - Images from the web (dragged, copied with "Copy image", or added by URL) are stored as links only; nothing is downloaded.
@@ -72,6 +88,8 @@ The app wears "Early Bird", an original theme that pays homage to early-2010s mi
 [`typer/`](typer/) types each tweet into X for you instead of pasting it. "Copy for typer" in the app copies the thread as JSON for it. See [typer/README.md](typer/README.md).
 
 ## Splitting and arranging
+
+These tools live in the Tweet cards tab.
 
 - **Split a long draft…** turns a pasted essay into tweets, breaking at paragraphs, then sentences, then words. A line with just `---` forces a break; "Number tweets" adds `1/n` suffixes.
 - **Fit ↓** appears on a tweet that's over the limit and moves the extra text into the next tweet. **Fit all to limit** does it for the whole thread.

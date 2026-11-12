@@ -8,7 +8,7 @@ export const BREAK_RE = /\n[ \t]*-{3,}[ \t]*\n/;
 const isLowSurrogate = (c) => c >= 0xdc00 && c <= 0xdfff;
 
 /** Longest prefix length (in string indices) whose weighted length fits. */
-function maxFittingIndex(text, limit) {
+export function maxFittingIndex(text, limit) {
   if (tweetLength(text) <= limit) return text.length;
   let lo = 0;
   let hi = text.length;

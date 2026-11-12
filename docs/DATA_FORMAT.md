@@ -32,6 +32,25 @@ All data lives in `data/` (or `$TWEETMGR_DATA`). Files are pretty-printed JSON a
   - `upload`: `imageId` is a file name inside `data/images/`. To attach a figure, copy it into `data/images/` and reference its file name.
   - `url`: a remote image; only the URL is stored.
 
+### The `draft` field (optional)
+
+The app's Draft view writes the thread as one continuous text and cuts it into `tweets`. It saves that text next to the tweets so the cuts can keep moving as the text changes:
+
+```json
+"draft": {
+  "text": "Why do our cells age? 🧵\n\nTelomeres are protective caps… \uFFFC\n\nWhy does that matter? …",
+  "media": ["m_1"],
+  "pins": [26],
+  "limit": 280
+}
+```
+
+- `text` is the whole draft. Each image is one `\uFFFC` character at the point where it was inserted, and `media` lists the image ids in that order. An image belongs to the tweet its character falls in.
+- `pins` are the offsets in `text` where the writer placed a cut by hand. All other cuts are automatic.
+- `limit` is the character limit the tweets were cut with.
+
+`tweets` stays the source of truth, and scripts never need to read or write `draft`. If you change `tweets`, leave `draft` alone or delete it: when it no longer matches the tweets, the app rebuilds the draft from them (one paragraph per tweet, every cut kept as a hand-placed cut).
+
 ## Profile: `data/profiles/<id>.json`
 
 ```json

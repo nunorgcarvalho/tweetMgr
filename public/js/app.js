@@ -171,6 +171,7 @@ export function renderThread() {
   list.replaceChildren(...thread.tweets.map((t, i) => renderTweet(t, i, thread.tweets.length)));
   list.querySelectorAll('.tweet-text').forEach(autosize); // needs to be in the DOM to measure
   updateMeta();
+  for (const hook of threadRenderHooks) hook();
 }
 
 export function renderProfile() {
@@ -233,6 +234,23 @@ export function mutateThread(fn) {
   if (!state.thread.tweets.length) state.thread.tweets.push(createTweet());
   renderThread();
   scheduleSave();
+}
+
+const threadRenderHooks = [];
+/** Called after the open thread is (re)rendered: on load, reload, or a structural change. */
+export function onThreadRender(hook) {
+  threadRenderHooks.push(hook);
+  if (state.thread) hook();
+}
+
+/**
+ * For editors that keep their own DOM (the continuous draft): call after
+ * changing state.thread in place. Saves without re-rendering the tweet cards.
+ */
+export function commitThread() {
+  updateMeta();
+  scheduleSave();
+  document.dispatchEvent(new CustomEvent('tweetmgr:edit'));
 }
 
 let threadListRenderer = null;
