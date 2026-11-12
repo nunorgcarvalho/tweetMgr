@@ -33,6 +33,11 @@ await store.saveThread(mk('th_demo', 'Why do cells age? A short thread', [
   'Full reading list here: https://example.com/reading-list',
 ], '2026-11-12T01:00:00Z'));
 await store.setSetting('activeThreadId', 'th_demo');
+// A tiny inline picture so the preview can show an attached image.
+const demoImage = "data:image/svg+xml," + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 132 92'><rect width='132' height='92' fill='#f4f4f4'/><path d='M14 78V20M14 78h108' stroke='#999' stroke-width='2'/><path d='M18 30l22 10 20 6 24 14 30 8' fill='none' stroke='#0084b4' stroke-width='3'/></svg>");
+const demo = await store.getThread('th_demo');
+demo.tweets[1].media.push({ id: 'm_demo', source: 'url', url: demoImage, alt: 'A line chart of telomere length falling with each cell division.' });
+await store.saveThread(demo);
 
 const server = createApp(store);
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
@@ -65,6 +70,14 @@ try {
   await page.click('.lib-item[data-id="th_b"] [data-act="delete"]');
   await page.click('#profile-delete');
   await sidebar.screenshot({ path: join(outDir, 'library-confirm.png') });
+
+  await page.click('.tab[data-view="preview"]');
+  await page.waitForSelector('#preview-tweets .tweet');
+  await page.screenshot({ path: join(outDir, 'preview.png') });
+
+  const guide = await browser.newPage({ viewport: { width: 1100, height: 760 }, deviceScaleFactor: 2 });
+  await guide.goto(`${url}styleguide.html`);
+  await guide.screenshot({ path: join(outDir, 'styleguide.png'), fullPage: true });
 
   const phone = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
   await phone.goto(url);

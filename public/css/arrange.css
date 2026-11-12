@@ -52,3 +52,5 @@
   .drag-handle { display: none; }
 }
 .draft-cancel { margin-left: auto; }
+.tweet-actions .counter { margin-left: auto; }
+.drag-handle { z-index: 2; }

@@ -61,6 +61,12 @@ Click **+ ALT** on an image to describe it. Images without a description show a 
 
 ![Images with alt text](docs/screenshots/media-composer.png)
 
+## Look and feel
+
+The app wears "Early Bird", an original theme that pays homage to early-2010s microblogging. Every color, font, and radius is a CSS variable at the top of `public/css/theme.css`, and `/styleguide.html` shows each component live. The Preview tab shows the thread as a read-only timeline.
+
+![Preview](docs/screenshots/preview.png)
+
 ## Typing macro
 
 [`typer/`](typer/) types each tweet into X for you instead of pasting it. "Copy for typer" in the app copies the thread as JSON for it. See [typer/README.md](typer/README.md).

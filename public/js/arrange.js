@@ -129,7 +129,9 @@ onRenderTweet((li, tweet, index) => {
   for (const [action, label, title] of CONTROLS) {
     const b = document.createElement('button');
     b.type = 'button';
-    b.className = 'btn btn-small';
+    // Quiet buttons show on hover, matching the theme's per-tweet actions;
+    // Fit stays loud because it flags a problem.
+    b.className = action === 'overflow' ? 'btn btn-small' : 'btn btn-small btn-quiet';
     b.dataset.arrange = action;
     b.textContent = label;
     b.title = title;

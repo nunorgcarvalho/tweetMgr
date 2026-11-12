@@ -198,3 +198,20 @@
 @media (max-width: 600px) {
   .media-buttons { flex-wrap: wrap; }
 }
+
+/* Integration with the Early Bird theme: theme.css styles .media-item and
+   .media-add as fixed-size gallery tiles (style guide). Inside a tweet card,
+   the media grid and the compact Photo button above take precedence. */
+.tweet .media-item { width: auto; height: auto; border: 0; border-radius: 0; box-shadow: none; }
+.tweet-actions .media-add {
+  width: auto;
+  height: auto;
+  flex-direction: row;
+  font: bold 11px/1 var(--font);
+  color: var(--text);
+  border: 1px solid var(--btn-border);
+  border-style: solid;
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--btn-top), var(--btn-bottom));
+}
+.tweet-actions { flex-wrap: wrap; row-gap: 6px; }

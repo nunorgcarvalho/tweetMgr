@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>tweetMgr</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2333ccff'/%3E%3Ctext x='16' y='23' font-family='Arial' font-weight='bold' font-size='20' fill='white' text-anchor='middle'%3Et%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23222'/%3E%3Crect x='7' y='5' width='18' height='4.5' rx='2.2' fill='%23fff'/%3E%3Crect x='7' y='22.5' width='18' height='4.5' rx='2.2' fill='%23fff'/%3E%3Crect x='10' y='9.5' width='12' height='13' fill='%2333ccff'/%3E%3Cpath d='M10 13l12-2M10 16.5l12-2M10 20l12-2' stroke='%230e98cf' stroke-width='1.4'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/media.css">
   <link rel="stylesheet" href="css/library.css">
@@ -13,7 +13,7 @@
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="wordmark" href="/">tweet<span>Mgr</span></a>
+      <a class="wordmark" href="/"><svg class="wordmark-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="6" y="3" width="20" height="5" rx="2.5" fill="#fff"/><rect x="6" y="24" width="20" height="5" rx="2.5" fill="#fff"/><rect x="9" y="8" width="14" height="16" fill="#33ccff"/><path d="M9 12.5l14-2.5M9 16.5l14-2.5M9 20.5l14-2.5" stroke="#0e98cf" stroke-width="1.5"/><path d="M23 19.5c5 .5 6.5 4 3.5 7.5" stroke="#33ccff" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>tweet<span>Mgr</span></a>
       <span class="topbar-note" id="storage-note"></span>
       <span class="topbar-status" id="save-status"></span>
     </div>
@@ -25,13 +25,36 @@
         <input id="thread-title" class="thread-title" type="text" aria-label="Thread title" placeholder="Untitled thread">
         <span class="thread-meta" id="thread-meta"></span>
       </div>
+      <div class="tabs" role="tablist" aria-label="View">
+        <button type="button" class="tab is-active" role="tab" aria-selected="true" data-view="compose">Compose</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-view="preview">Preview</button>
+      </div>
       <ol id="tweets" class="tweets"></ol>
-      <div class="content-footer">
+      <div id="preview" hidden>
+        <p class="preview-note">This is how the thread will read once it is posted.</p>
+        <ol id="preview-tweets" class="tweets timeline"></ol>
+      </div>
+      <div class="content-footer" id="compose-footer">
         <button type="button" class="btn" id="add-tweet">+ Add tweet</button>
       </div>
     </section>
 
     <aside class="dashboard" aria-label="Sidebar">
+      <div class="dash-box" id="summary-box">
+        <div class="profile-card">
+          <div class="avatar" id="summary-avatar" aria-hidden="true"></div>
+          <div>
+            <span class="profile-card-name" id="summary-name"></span>
+            <span class="profile-card-handle" id="summary-handle"></span>
+          </div>
+        </div>
+        <ul class="stats" aria-label="Thread size">
+          <li><b id="stat-tweets">0</b><span>Tweets</span></li>
+          <li><b id="stat-chars">0</b><span>Characters</span></li>
+          <li id="stat-over-item"><b id="stat-over">0</b><span>Over limit</span></li>
+        </ul>
+      </div>
+
       <div class="dash-box" id="profile-box">
         <h3>Account</h3>
         <div class="profile-switcher">
@@ -65,11 +88,12 @@
 
       <div class="dash-box" id="export-box">
         <h3>Post it</h3>
-        <button type="button" class="btn btn-block" id="copy-typer" title="Copies the thread as JSON for the typing macro">Copy for typer</button>
+        <button type="button" class="btn btn-primary btn-large btn-block" id="copy-typer" title="Copies the thread as JSON for the typing macro">Copy for typer</button>
         <p class="dash-hint">Paste into the typing macro so each tweet is typed out instead of pasted.</p>
       </div>
     </aside>
   </main>
+  <footer class="page-footer">tweetMgr is an independent tool and is not affiliated with Twitter or X. <a href="styleguide.html">Style guide</a></footer>
 
   <template id="tweet-template">
     <li class="tweet">
@@ -83,11 +107,11 @@
         <textarea class="tweet-text" rows="3" placeholder="What's happening?"></textarea>
         <div class="tweet-media" hidden></div>
         <div class="tweet-actions">
-          <span class="counter" aria-live="polite"></span>
+          <button type="button" class="btn btn-small btn-quiet" data-action="copy" title="Copy this tweet's text">Copy</button>
+          <button type="button" class="btn btn-small btn-quiet" data-action="add-below" title="Insert a new tweet below">+ Add below</button>
+          <button type="button" class="btn btn-small btn-quiet btn-danger" data-action="delete" title="Delete this tweet">Delete</button>
           <span class="spacer"></span>
-          <button type="button" class="btn btn-small" data-action="copy" title="Copy this tweet's text">Copy</button>
-          <button type="button" class="btn btn-small" data-action="add-below" title="Insert a new tweet below">+ Below</button>
-          <button type="button" class="btn btn-small btn-danger" data-action="delete" title="Delete this tweet">Delete</button>
+          <span class="counter" aria-live="polite"></span>
         </div>
       </div>
     </li>
@@ -98,5 +122,6 @@
   <script type="module" src="js/media.js"></script>
   <script type="module" src="js/library.js"></script>
   <script type="module" src="js/arrange.js"></script>
+  <script type="module" src="js/preview.js"></script>
 </body>
 </html>
