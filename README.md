@@ -35,6 +35,17 @@ If the app is opened without the local server (for example from a future hosted 
 
 Choose your account type in the sidebar: Free (280), Premium (25,000), or a custom limit. Counting follows Twitter/X's rules: links count as 23, emoji and CJK characters count as 2.
 
+## Images and alt text
+
+Each tweet can have up to four images, each with alt text (up to 1,000 characters). Add them with the **Photo** button, by pasting a screenshot into a tweet, by dragging a file or an image from a web page onto a tweet, or with **Image URL**.
+
+- Images from your computer are copied into `data/images/`. Browsers don't reveal where a file lives on disk, so the app keeps its own copy.
+- Images from the web (dragged, copied with "Copy image", or added by URL) are stored as links only; nothing is downloaded.
+
+Click **+ ALT** on an image to describe it. Images without a description show a red badge so they're easy to spot before posting. Removing an image from a tweet leaves its file in `data/images/`.
+
+![Images with alt text](docs/screenshots/media-composer.png)
+
 ## Typing macro
 
 "Copy for typer" copies the thread as JSON for the typing macro in `typer/`, which types each tweet into X's composer instead of pasting it.
