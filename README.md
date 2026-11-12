@@ -37,4 +37,4 @@ Choose your account type in the sidebar: Free (280), Premium (25,000), or a cust
 
 ## Typing macro
 
-"Copy for typer" copies the thread as JSON for the typing macro in `typer/`, which types each tweet into X's composer instead of pasting it.
+[`typer/`](typer/) types each tweet into X for you instead of pasting it. "Copy for typer" in the app copies the thread as JSON for it. See [typer/README.md](typer/README.md).
