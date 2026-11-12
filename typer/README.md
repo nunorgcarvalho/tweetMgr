@@ -49,6 +49,10 @@ python typer/type_tweets.py my-thread.json          # walks through each tweet
 python typer/type_tweets.py my-thread.json --tweet 2
 ```
 
+The script also reads tweetMgr's saved thread files directly, for example
+`python typer/type_tweets.py data/threads/<id>.json`. The userscript accepts
+that same file format if you paste it into the panel.
+
 It counts down a few seconds so you can click into X's compose box, then
 types. On macOS, give your terminal Accessibility permission first. Because
 these are real key presses, it works in any browser or app, but it types into
