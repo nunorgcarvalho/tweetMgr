@@ -1,0 +1,15 @@
+{
+  "name": "tweetmgr",
+  "version": "0.1.0",
+  "description": "Locally run composer for drafting Twitter/X threads.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js",
+    "screenshots": "node scripts/screenshots.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
