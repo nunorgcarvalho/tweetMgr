@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Local user data: never commit personal drafts, exports, or images
+data/
+exports/
+*.tweetmgr.json
+.env
+.env.*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
