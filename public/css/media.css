@@ -1,0 +1,200 @@
+/* Tweet images and the alt text editor. Uses the theme's CSS variables so it
+   follows any restyle of theme.css. */
+
+.tweet-media {
+  display: grid;
+  gap: 2px;
+  margin-top: 8px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  grid-template-columns: 1fr 1fr;
+  aspect-ratio: 16 / 9;
+}
+.tweet-media[data-count="1"] { grid-template-columns: 1fr; }
+.tweet-media[data-count="3"] { grid-template-rows: 1fr 1fr; }
+.tweet-media[data-count="3"] .media-item:first-child { grid-row: span 2; }
+.tweet-media[data-count="4"] { grid-template-rows: 1fr 1fr; }
+
+.media-item {
+  position: relative;
+  margin: 0;
+  min-height: 0;
+  background: #f5f8fa;
+}
+.media-item img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.media-item.is-broken img { visibility: hidden; }
+.media-broken {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Small dark pills over the image, like the classic photo overlays. */
+.media-alt-badge,
+.media-tool,
+.media-source {
+  position: absolute;
+  font: bold 11px/1 var(--font);
+  color: #fff;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.media-alt-badge {
+  left: 6px;
+  bottom: 6px;
+  padding: 4px 6px;
+  letter-spacing: 0.04em;
+}
+.media-alt-badge:not(.has-alt) { background: rgba(212, 13, 18, 0.8); }
+.media-alt-badge:hover,
+.media-tool:hover { background: rgba(0, 0, 0, 0.9); }
+.media-tools {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  gap: 4px;
+}
+.media-tool {
+  position: static;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  font-size: 15px;
+  line-height: 20px;
+}
+.media-source {
+  right: 6px;
+  bottom: 6px;
+  padding: 4px 6px;
+  font-weight: normal;
+  text-decoration: none;
+}
+.media-alt-badge:focus-visible,
+.media-tool:focus-visible,
+.media-source:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+
+/* Action bar additions */
+.media-buttons { display: inline-flex; align-items: center; gap: 6px; }
+.media-add { display: inline-flex; align-items: center; gap: 5px; }
+.media-add-icon {
+  width: 14px;
+  height: 11px;
+  border: 2px solid currentColor;
+  border-radius: 2px;
+  position: relative;
+}
+.media-add-icon::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  bottom: 1px;
+  border: 3px solid transparent;
+  border-bottom: 4px solid currentColor;
+  border-top: 0;
+}
+.btn[disabled] { opacity: 0.5; cursor: default; }
+.media-count { font-size: 11px; color: var(--muted); }
+
+.media-url-form {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.media-url-input {
+  flex: 1;
+  min-width: 0;
+  font: 13px var(--font);
+  padding: 5px 7px;
+  border: 1px solid var(--btn-border);
+  border-radius: 4px;
+}
+.media-url-input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 4px var(--focus); }
+
+.tweet.is-drop-target {
+  outline: 2px dashed var(--brand);
+  outline-offset: -4px;
+  background-color: #f0faff;
+}
+
+/* Alt text editor */
+.alt-dialog {
+  width: min(520px, calc(100vw - 32px));
+  padding: 0;
+  border: 1px solid #999;
+  border-radius: var(--radius);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  color: var(--text);
+  font: 14px/1.4 var(--font);
+}
+.alt-dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
+.alt-head {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--rule);
+  background: linear-gradient(180deg, #ffffff, #f2f2f2);
+}
+.alt-head h2 { flex: 1; margin: 0; font-size: 16px; }
+.alt-close {
+  border: 0;
+  background: none;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+}
+.alt-close:hover { color: var(--text); }
+.alt-preview-wrap {
+  display: grid;
+  place-items: center;
+  background: #222;
+  max-height: 260px;
+}
+.alt-preview { max-width: 100%; max-height: 260px; object-fit: contain; }
+.alt-label {
+  display: block;
+  padding: 12px 14px 0;
+  font-weight: bold;
+  font-size: 12px;
+  color: #666;
+}
+.alt-text {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px;
+  font: 14px/1.4 var(--font);
+  border: 1px solid var(--btn-border);
+  border-radius: 4px;
+  resize: vertical;
+}
+.alt-text:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 4px var(--focus); }
+.alt-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px 14px;
+  font-size: 12px;
+}
+.alt-foot a { color: var(--link); }
+.alt-foot .spacer { flex: 1; }
+.alt-counter { color: var(--muted); }
+.alt-counter.is-over { color: var(--over); font-weight: bold; }
+
+@media (max-width: 600px) {
+  .media-buttons { flex-wrap: wrap; }
+}
